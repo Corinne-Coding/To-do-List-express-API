@@ -6,9 +6,8 @@ const encBase64 = require("crypto-js/enc-base64");
 
 const User = require("../models/User");
 
+// SIGN UP
 router.post("/signup", async (req, res) => {
-  // req.fields : email, username, password
-
   const { email, username, password } = req.fields;
   try {
     const userEmail = await User.findOne({ "account.email": email });
@@ -34,7 +33,6 @@ router.post("/signup", async (req, res) => {
           token: newUser.token,
           email: newUser.account.email,
           username: newUser.account.username,
-          boards: newUser.boards,
         });
       } else {
         res.status(400).json({ error: "Missing parameters" });
@@ -48,29 +46,34 @@ router.post("/signup", async (req, res) => {
   }
 });
 
+// SIGN IN
 router.post("/signin", async (req, res) => {
   const { email, password } = req.fields;
-  if (password && email) {
-    const user = await User.findOne({
-      "account.email": email,
-    }).populate("board");
-    if (user) {
-      if (SHA256(password + user.salt).toString(encBase64) === user.hash) {
-        res.json({
-          _id: user._id,
-          token: user.token,
-          email: user.account.email,
-          username: user.account.username,
-          boards: user.boards,
-        });
+  try {
+    if (password && email) {
+      const user = await User.findOne({
+        "account.email": email,
+      });
+      if (user) {
+        if (SHA256(password + user.salt).toString(encBase64) === user.hash) {
+          res.json({
+            _id: user._id,
+            token: user.token,
+            email: user.account.email,
+            username: user.account.username,
+          });
+        } else {
+          res.status(401).json({ error: "Unauthorized" });
+        }
       } else {
         res.status(401).json({ error: "Unauthorized" });
       }
     } else {
-      res.status(401).json({ error: "Unauthorized" });
+      res.status(400).json({ error: "Missing parameters" });
     }
-  } else {
-    res.status(400).json({ error: "Missing parameters" });
+  } catch (error) {
+    console.log(error);
+    res.status(400).json({ error: error.message });
   }
 });
 
