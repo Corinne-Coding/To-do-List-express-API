@@ -38,9 +38,20 @@ router.post("/create/board", isAuthenticated, async (req, res) => {
 
 router.get("/boards", isAuthenticated, async (req, res) => {
   try {
-    const user = req.user;
-    const userToFind = await User.findById(user._id).populate("boardsId");
-    res.json(userToFind.boardsId);
+    const { user } = req;
+    const { date } = req.query;
+
+    const sort = { date: "asc" };
+    if (date === "desc") {
+      sort.date = date;
+    }
+
+    const userBoards = await User.findById(user._id).populate({
+      path: "boardsId",
+      options: { sort: sort },
+    });
+
+    res.json(userBoards.boardsId);
   } catch (error) {
     console.log(error);
     res.status(400).json({ error: error.message });
@@ -50,6 +61,7 @@ router.get("/boards", isAuthenticated, async (req, res) => {
 router.put("/update/board/:id", isAuthenticated, async (req, res) => {
   const { id } = req.params;
   const { title } = req.fields;
+
   try {
     if (title) {
       const boardToUpdate = await Board.findById(id);
@@ -70,6 +82,7 @@ router.put("/update/board/:id", isAuthenticated, async (req, res) => {
 
 router.delete("/delete/board/:id", isAuthenticated, async (req, res) => {
   const { id } = req.params;
+  console.log(id);
   try {
     await Board.findByIdAndDelete(id);
     res.json({ message: "Board successfully deleted" });
