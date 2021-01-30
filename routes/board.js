@@ -26,7 +26,7 @@ router.post("/create/board", isAuthenticated, async (req, res) => {
       boardsArray.push(newBoard._id);
       await user.save();
 
-      res.json(newBoard);
+      res.json({ message: "Board successfully created" });
     } else {
       res.status(400).json({ error: "Missing title" });
     }
@@ -53,6 +53,7 @@ router.get("/boards", isAuthenticated, async (req, res) => {
 
     res.json(userBoards.boardsId);
   } catch (error) {
+    ``;
     console.log(error);
     res.status(400).json({ error: error.message });
   }

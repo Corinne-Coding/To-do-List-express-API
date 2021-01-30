@@ -15,8 +15,10 @@ mongoose.connect("mongodb://localhost/to-do-list", {
 
 const userRoutes = require("./routes/user");
 const boardRoutes = require("./routes/board");
+const taskRoutes = require("./routes/task");
 app.use(userRoutes);
 app.use(boardRoutes);
+app.use(taskRoutes);
 
 app.get("/", (req, res) => {
   res.json({ message: "Welcome on my To-do List API." });
