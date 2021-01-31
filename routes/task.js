@@ -35,27 +35,21 @@ router.post("/create/task", isAuthenticated, async (req, res) => {
   }
 });
 
-// router.get("/boards", isAuthenticated, async (req, res) => {
-//   try {
-//     const { user } = req;
-//     const { date } = req.query;
+router.get("/tasks/:boardId", isAuthenticated, async (req, res) => {
+  try {
+    const { boardId } = req.params;
 
-//     const sort = { date: "asc" };
-//     if (date === "desc") {
-//       sort.date = date;
-//     }
+    const board = await Board.findById(boardId);
 
-//     const userBoards = await User.findById(user._id).populate({
-//       path: "boardsId",
-//       options: { sort: sort },
-//     });
+    const tasks = await Task.find({ _id: { $in: board.tasksId } });
+    // console.log(tasks);
 
-//     res.json(userBoards.boardsId);
-//   } catch (error) {``
-//     console.log(error);
-//     res.status(400).json({ error: error.message });
-//   }
-// });
+    res.json(tasks);
+  } catch (error) {
+    console.log(error);
+    res.status(400).json({ error: error.message });
+  }
+});
 
 // router.put("/update/board/:id", isAuthenticated, async (req, res) => {
 //   const { id } = req.params;
