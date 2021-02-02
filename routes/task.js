@@ -9,7 +9,7 @@ const isAuthenticated = require("../middlewares/isAuthenticated");
 // CREATE BOARD
 router.post("/create/task", isAuthenticated, async (req, res) => {
   const { title, boardId } = req.fields;
-  console.log(req.fields);
+
   try {
     if (title && boardId) {
       // new Task
@@ -30,7 +30,6 @@ router.post("/create/task", isAuthenticated, async (req, res) => {
       res.status(400).json({ error: "Missing parameters" });
     }
   } catch (error) {
-    console.log(error);
     res.status(400).json({ error: error.message });
   }
 });
@@ -55,42 +54,58 @@ router.get("/tasks/:boardId", isAuthenticated, async (req, res) => {
 
     res.json(obj);
   } catch (error) {
-    console.log(error);
     res.status(400).json({ error: error.message });
   }
 });
 
-// router.put("/update/board/:id", isAuthenticated, async (req, res) => {
-//   const { id } = req.params;
-//   const { title } = req.fields;
+router.put("/update/task/:id", isAuthenticated, async (req, res) => {
+  const { id } = req.params;
+  const { title, done } = req.fields;
 
-//   try {
-//     if (title) {
-//       const boardToUpdate = await Board.findById(id);
-//       if (title === boardToUpdate.title) {
-//         res.json(boardToUpdate);
-//       } else {
-//         await boardToUpdate.updateOne({ title: title });
-//         res.json({ message: "Board successfully updated" });
-//       }
-//     } else {
-//       res.status(400).json({ error: "Missing title" });
-//     }
-//   } catch (error) {
-//     console.log(error);
-//     res.status(400).json({ error: error.message });
-//   }
-// });
+  try {
+    if (title || done === false || done === true) {
+      const taskToUpdate = await Task.findById(id);
 
-// router.delete("/delete/board/:id", isAuthenticated, async (req, res) => {
-//   const { id } = req.params;
-//   console.log(id);
-//   try {
-//     await Board.findByIdAndDelete(id);
-//     res.json({ message: "Board successfully deleted" });
-//   } catch (error) {
-//     res.status(400).json({ error: error.message });
-//   }
-// });
+      if (title) {
+        if (title === taskToUpdate.title) {
+          res.json({ message: "Task successfully updated" });
+        } else {
+          await taskToUpdate.updateOne({ title: title });
+          res.json({ message: "Task successfully updated" });
+        }
+      } else if (done === true || done === false) {
+        if (done === taskToUpdate.done) {
+          res.json({ message: "Task successfully updated" });
+        } else {
+          await taskToUpdate.updateOne({ done: done });
+          res.json({ message: "Task successfully updated" });
+        }
+      }
+    } else {
+      res.status(400).json({ error: "Missing parameter" });
+    }
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+router.delete("/delete/task/:id", isAuthenticated, async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const taskToDelete = await Task.findByIdAndDelete(id);
+    if (taskToDelete) {
+      // update tasksId array in board
+      const boardToUpdate = await Board.findOne({ tasksId: { $in: id } });
+      boardToUpdate.tasksId.pull(id);
+      await boardToUpdate.save();
+      res.json({ message: "Task successfully deleted" });
+    } else {
+      res.status(400).json({ error: "Task not found" });
+    }
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
 
 module.exports = router;

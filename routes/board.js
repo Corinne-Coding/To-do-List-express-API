@@ -31,7 +31,6 @@ router.post("/create/board", isAuthenticated, async (req, res) => {
       res.status(400).json({ error: "Missing title" });
     }
   } catch (error) {
-    console.log(error);
     res.status(400).json({ error: error.message });
   }
 });
@@ -54,7 +53,7 @@ router.get("/boards", isAuthenticated, async (req, res) => {
     res.json(userBoards.boardsId);
   } catch (error) {
     ``;
-    console.log(error);
+
     res.status(400).json({ error: error.message });
   }
 });
@@ -76,17 +75,20 @@ router.put("/update/board/:id", isAuthenticated, async (req, res) => {
       res.status(400).json({ error: "Missing title" });
     }
   } catch (error) {
-    console.log(error);
     res.status(400).json({ error: error.message });
   }
 });
 
 router.delete("/delete/board/:id", isAuthenticated, async (req, res) => {
   const { id } = req.params;
-  console.log(id);
+
   try {
-    await Board.findByIdAndDelete(id);
-    res.json({ message: "Board successfully deleted" });
+    const boardToDelete = await Board.findByIdAndDelete(id);
+    if (boardToDelete) {
+      res.json({ message: "Board successfully deleted" });
+    } else {
+      res.status(400).json({ error: "Board not found" });
+    }
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
