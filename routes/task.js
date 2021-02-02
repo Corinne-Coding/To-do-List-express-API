@@ -44,7 +44,16 @@ router.get("/tasks/:boardId", isAuthenticated, async (req, res) => {
     const tasks = await Task.find({ _id: { $in: board.tasksId } });
     // console.log(tasks);
 
-    res.json(tasks);
+    const obj = { todo: [], done: [] };
+    tasks.map((task) => {
+      if (task.done) {
+        obj.done.push(task);
+      } else {
+        obj.todo.push(task);
+      }
+    });
+
+    res.json(obj);
   } catch (error) {
     console.log(error);
     res.status(400).json({ error: error.message });
