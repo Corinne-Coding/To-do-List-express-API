@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 const Board = require("../models/Board");
+const Task = require("../models/Task");
 const User = require("../models/User");
 
 const isAuthenticated = require("../middlewares/isAuthenticated");
@@ -84,6 +85,8 @@ router.delete("/delete/board/:id", isAuthenticated, async (req, res) => {
 
   try {
     const boardToDelete = await Board.findByIdAndDelete(id);
+    await Task.deleteMany({ _id: { $in: boardToDelete.tasksId } });
+
     if (boardToDelete) {
       res.json({ message: "Board successfully deleted" });
     } else {
