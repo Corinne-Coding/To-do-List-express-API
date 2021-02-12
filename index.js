@@ -28,6 +28,6 @@ app.all("*", function (req, res) {
   res.status(404).json({ message: "Not found" });
 });
 
-app.listen(3000, () => {
+app.listen(process.env.PORT || 3000, () => {
   console.log("Server Started");
 });

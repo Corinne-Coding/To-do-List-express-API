@@ -7,7 +7,7 @@ const User = require("../models/User");
 
 const isAuthenticated = require("../middlewares/isAuthenticated");
 
-// CREATE BOARD
+// Add board in DB
 router.post("/create/board", isAuthenticated, async (req, res) => {
   const { title } = req.fields;
   try {
@@ -36,29 +36,26 @@ router.post("/create/board", isAuthenticated, async (req, res) => {
   }
 });
 
+// Get all boards
 router.get("/boards", isAuthenticated, async (req, res) => {
   try {
     const { user } = req;
-    const { date } = req.query;
-
-    const sort = { date: "asc" };
-    if (date === "desc") {
-      sort.date = date;
-    }
 
     const userBoards = await User.findById(user._id).populate({
       path: "boardsId",
-      options: { sort: sort },
+      populate: {
+        path: "tasksId",
+      },
+      options: { sort: { date: "desc" } },
     });
 
     res.json(userBoards.boardsId);
   } catch (error) {
-    ``;
-
     res.status(400).json({ error: error.message });
   }
 });
 
+// Update board
 router.put("/update/board/:id", isAuthenticated, async (req, res) => {
   const { id } = req.params;
   const { title } = req.fields;
@@ -80,6 +77,7 @@ router.put("/update/board/:id", isAuthenticated, async (req, res) => {
   }
 });
 
+// Delete board
 router.delete("/delete/board/:id", isAuthenticated, async (req, res) => {
   const { id } = req.params;
 

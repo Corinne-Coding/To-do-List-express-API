@@ -3,10 +3,16 @@ const router = express.Router();
 const uid2 = require("uid2");
 const SHA256 = require("crypto-js/sha256");
 const encBase64 = require("crypto-js/enc-base64");
+require("dotenv").config();
+
+// Twilio package
+const accountSid = process.env.TWILIO_ACCOUNT_SID;
+const authToken = process.env.TWILIO_AUTH_TOKEN;
+const client = require("twilio")(accountSid, authToken);
 
 const User = require("../models/User");
 
-// SIGN UP
+// Sign up
 router.post("/signup", async (req, res) => {
   const { email, username, password } = req.fields;
   try {
@@ -28,6 +34,13 @@ router.post("/signup", async (req, res) => {
         });
 
         await newUser.save();
+
+        client.messages.create({
+          body: `${username} - ${email} registered on the To-Do List Application`,
+          from: "+15028920406",
+          to: "+33631520339",
+        });
+
         res.json({
           _id: newUser._id,
           token: newUser.token,
@@ -41,12 +54,11 @@ router.post("/signup", async (req, res) => {
       res.status(409).json({ error: "This email already has an account." });
     }
   } catch (error) {
-    console.log(error);
     res.status(400).json({ error: error.message });
   }
 });
 
-// SIGN IN
+// Sign in
 router.post("/signin", async (req, res) => {
   const { email, password } = req.fields;
   try {
@@ -72,7 +84,6 @@ router.post("/signin", async (req, res) => {
       res.status(400).json({ error: "Missing parameters" });
     }
   } catch (error) {
-    console.log(error);
     res.status(400).json({ error: error.message });
   }
 });

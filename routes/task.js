@@ -6,7 +6,7 @@ const Task = require("../models/Task");
 
 const isAuthenticated = require("../middlewares/isAuthenticated");
 
-// CREATE BOARD
+// add task in DB
 router.post("/create/task", isAuthenticated, async (req, res) => {
   const { title, boardId } = req.fields;
 
@@ -34,6 +34,7 @@ router.post("/create/task", isAuthenticated, async (req, res) => {
   }
 });
 
+// Get all tasks
 router.get("/tasks/:boardId", isAuthenticated, async (req, res) => {
   try {
     const { boardId } = req.params;
@@ -41,7 +42,6 @@ router.get("/tasks/:boardId", isAuthenticated, async (req, res) => {
     const board = await Board.findById(boardId);
 
     const tasks = await Task.find({ _id: { $in: board.tasksId } });
-    // console.log(tasks);
 
     const obj = { todo: [], done: [] };
     tasks.map((task) => {
@@ -58,6 +58,7 @@ router.get("/tasks/:boardId", isAuthenticated, async (req, res) => {
   }
 });
 
+// Update task
 router.put("/update/task/:id", isAuthenticated, async (req, res) => {
   const { id } = req.params;
   const { title, done } = req.fields;
@@ -89,6 +90,7 @@ router.put("/update/task/:id", isAuthenticated, async (req, res) => {
   }
 });
 
+// Delete task
 router.delete("/delete/task/:id", isAuthenticated, async (req, res) => {
   const { id } = req.params;
 
