@@ -12,11 +12,16 @@ const client = require("twilio")(accountSid, authToken);
 
 const User = require("../models/User");
 
+console.log("00");
+
 // Sign up
 router.post("/signup", async (req, res) => {
+  console.log("01");
   const { email, username, password } = req.fields;
   try {
     const userEmail = await User.findOne({ "account.email": email });
+    console.log("02");
+    console.log(userEmail);
     if (!userEmail) {
       if (email && username && password) {
         const token = uid2(64);
