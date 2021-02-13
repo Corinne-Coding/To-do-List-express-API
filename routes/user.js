@@ -14,50 +14,46 @@ const User = require("../models/User");
 
 // Sign up
 router.post("/signup", async (req, res) => {
-  console.log("01");
   const { email, username, password } = req.fields;
   try {
     const userEmail = await User.findOne({ "account.email": email });
-    console.log(userEmail);
 
-    res.json(userEmail);
+    if (!userEmail) {
+      if (email && username && password) {
+        const token = uid2(64);
+        const salt = uid2(64);
+        const hash = SHA256(password + salt).toString(encBase64);
 
-    // if (!userEmail) {
-    //   if (email && username && password) {
-    //     const token = uid2(64);
-    //     const salt = uid2(64);
-    //     const hash = SHA256(password + salt).toString(encBase64);
+        const newUser = new User({
+          token,
+          salt,
+          hash,
+          account: {
+            email,
+            username,
+          },
+        });
 
-    //     const newUser = new User({
-    //       token,
-    //       salt,
-    //       hash,
-    //       account: {
-    //         email,
-    //         username,
-    //       },
-    //     });
+        await newUser.save();
 
-    //     await newUser.save();
+        client.messages.create({
+          body: `${username} - ${email} registered on the To-Do List Application`,
+          from: "+15028920406",
+          to: "+33631520339",
+        });
 
-    //     client.messages.create({
-    //       body: `${username} - ${email} registered on the To-Do List Application`,
-    //       from: "+15028920406",
-    //       to: "+33631520339",
-    //     });
-
-    //     res.json({
-    //       _id: newUser._id,
-    //       token: newUser.token,
-    //       email: newUser.account.email,
-    //       username: newUser.account.username,
-    //     });
-    // } else {
-    //   res.status(400).json({ error: "Missing parameters" });
-    //   // }
-    // } else {
-    //   res.status(409).json({ error: "This email already has an account." });
-    // }
+        res.json({
+          _id: newUser._id,
+          token: newUser.token,
+          email: newUser.account.email,
+          username: newUser.account.username,
+        });
+      } else {
+        res.status(400).json({ error: "Missing parameters" });
+      }
+    } else {
+      res.status(409).json({ error: "This email already has an account." });
+    }
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
