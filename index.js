@@ -7,7 +7,7 @@ const app = express();
 app.use(cors());
 app.use(formidableMiddleware());
 
-mongoose.connect("mongodb://localhost/to-do-list", {
+mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/to-do-list", {
   useNewUrlParser: true,
   useUnifiedTopology: true,
   useCreateIndex: true,
