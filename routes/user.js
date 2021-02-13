@@ -19,7 +19,9 @@ router.post("/signup", async (req, res) => {
   console.log("01");
   const { email, username, password } = req.fields;
   try {
-    const userEmail = await User.findOne({ "account.email": email });
+    // const userEmail = await User.findOne({ "account.email": email });
+
+    const userEmail = true;
     console.log("02");
     console.log(userEmail);
     if (!userEmail) {
