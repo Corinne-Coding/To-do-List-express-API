@@ -20,7 +20,7 @@ router.post("/signup", async (req, res) => {
     const userEmail = await User.findOne({ "account.email": email });
     console.log(userEmail);
 
-    res.json(userEmail)
+    res.json(userEmail);
 
     // if (!userEmail) {
     //   if (email && username && password) {
@@ -52,12 +52,12 @@ router.post("/signup", async (req, res) => {
     //       email: newUser.account.email,
     //       username: newUser.account.username,
     //     });
-      } else {
-        res.status(400).json({ error: "Missing parameters" });
-      }
-    } else {
-      res.status(409).json({ error: "This email already has an account." });
-    }
+    // } else {
+    //   res.status(400).json({ error: "Missing parameters" });
+    //   // }
+    // } else {
+    //   res.status(409).json({ error: "This email already has an account." });
+    // }
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
