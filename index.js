@@ -23,8 +23,6 @@ app.use(userRoutes);
 app.use(boardRoutes);
 app.use(taskRoutes);
 
-console.log("index.js");
-
 app.get("/", (req, res) => {
   res.json({ message: "Welcome on my To-do List API." });
 });
