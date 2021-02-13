@@ -7,11 +7,14 @@ const app = express();
 app.use(cors());
 app.use(formidableMiddleware());
 
-mongoose.connect(process.env.MONGODB_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-  useCreateIndex: true,
-});
+mongoose
+  .connect(process.env.MONGODB_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useCreateIndex: true,
+  })
+  .then(() => console.log("Database Connected"))
+  .catch((err) => console.log(err));
 
 const userRoutes = require("./routes/user");
 const boardRoutes = require("./routes/board");
