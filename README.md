@@ -33,7 +33,9 @@ Add a new user in database
 | `password` | string | Yes      |
 | `username` | string | Yes      |
 
-### /login (POST)
+<br />
+
+### /signin (POST)
 
 Log a user
 
@@ -41,6 +43,8 @@ Log a user
 | ---------- | ------ | -------- |
 | `email`    | string | Yes      |
 | `password` | string | Yes      |
+
+<br />
 
 ### /create/board (POST)
 
@@ -50,9 +54,13 @@ Create a new board
 | ------- | ------ | -------- |
 | `title` | string | Yes      |
 
+<br />
+
 ### /boards (GET)
 
 Get all boards of the user
+
+<br />
 
 ### /update/board/:id (PUT)
 
@@ -68,6 +76,8 @@ Update a board title
 | ----- | -------- | ----------- |
 | `id`  | Yes      | board id    |
 
+<br />
+
 ### /delete/board/:id
 
 Delete a board and all tasks associated
@@ -75,6 +85,8 @@ Delete a board and all tasks associated
 | Param | Required | Description |
 | ----- | -------- | ----------- |
 | `id`  | Yes      | board id    |
+
+<br />
 
 ### /create/task (POST)
 
@@ -85,6 +97,8 @@ Create a new task
 | `title`   | string | Yes      |
 | `boardId` | string | Yes      |
 
+<br />
+
 ### /tasks/:boardId (GET)
 
 Get all tasks of a board
@@ -93,13 +107,16 @@ Get all tasks of a board
 | --------- | -------- | ----------- |
 | `boardId` | Yes      | board id    |
 
+<br />
+
 ### /update/task/:id (PUT)
 
 Update a task title or a task status
 
-| Body    | Type   | Required |
-| ------- | ------ | -------- |
-| `title` | string | Yes      |
+| Body    | Type    | Required |
+| ------- | ------- | -------- |
+| `title` | string  | No       |
+| `done`  | boolean | No       |
 
 <br />
 
@@ -114,6 +131,8 @@ Delete a task
 | Param | Required | Description |
 | ----- | -------- | ----------- |
 | `id`  | Yes      | task id     |
+
+<br />
 
 ## Install and run project
 
