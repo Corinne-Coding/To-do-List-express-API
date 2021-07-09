@@ -6,7 +6,7 @@ The To-do List Project is a **fullstack** project made in early 2021.
 
 This backend project is deployed on [Heroku](https://www.heroku.com/).
 
-If you want to take a look on the frontend project (React), follow this link : [To-do-List React app](https://github.com/Corinne-Coding/To-Do-List-React-APP)
+If you want to take a look on the frontend project made with **React**, follow this link : [To-do-List React app](https://github.com/Corinne-Coding/To-Do-List-React-APP)
 
 <br />
 
@@ -123,6 +123,8 @@ Update a task title or a task status
 | Param | Required | Description |
 | ----- | -------- | ----------- |
 | `id`  | Yes      | task id     |
+
+<br />
 
 ### /delete/task/:id (DELETE)
 
